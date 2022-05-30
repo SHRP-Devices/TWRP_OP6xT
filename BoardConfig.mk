@@ -58,6 +58,9 @@ QCOM_BOARD_PLATFORMS += sdm845
 TARGET_USES_64_BIT_BINDER := true
 TARGET_SUPPORTS_64_BIT_APPS := true
 
+#OTA
+TARGET_OTA_ASSERT_DEVICE := OnePlus6T,OnePlus6,fajita,enchilada
+
 # Kernel
 BOARD_KERNEL_PAGESIZE := 4096
 BOARD_KERNEL_BASE := 0x00000000
@@ -79,6 +82,10 @@ BOARD_KERNEL_SEPARATED_DTBO := true
 TARGET_KERNEL_ARCH := arm64
 BOARD_KERNEL_IMAGE_NAME := Image.gz-dtb
 TARGET_PREBUILT_KERNEL := $(DEVICE_PATH)/prebuilt/Image.gz-dtb
+#TARGET_KERNEL_SOURCE := kernel/oneplus/sdm845
+#TARGET_KERNEL_CLANG_COMPILE := true
+#TARGET_KERNEL_CLANG_VERSION := r383902b
+#TARGET_KERNEL_CONFIG := enchilada_defconfig
 
 # Partitions
 BOARD_FLASH_BLOCK_SIZE := 262144 # (BOARD_KERNEL_PAGESIZE * 64)
@@ -94,13 +101,17 @@ TARGET_USES_MKE2FS := true
 BOARD_BUILD_SYSTEM_ROOT_IMAGE := true
 BOARD_HAS_LARGE_FILESYSTEM := true
 BOARD_HAS_NO_SELECT_BUTTON := true
+BOARD_HAS_NO_REAL_SDCARD := true
+TARGET_NO_KERNEL := false
+TARGET_NO_RECOVERY := true
+BOARD_USES_RECOVERY_AS_BOOT := true
 #TARGET_NO_KERNEL := false
 #TARGET_NO_RECOVERY := true
 #BOARD_USES_RECOVERY_AS_BOOT := true
 BOARD_ROOT_EXTRA_FOLDERS := op1 op2 op_odm
 
 # Partitions (listed in the file) to be wiped under recovery.
-TARGET_RECOVERY_WIPE := $(DEVICE_PATH)/recovery.wipe
+TARGET_RECOVERY_WIPE := $(DEVICE_PATH)/recovery/root/system/etc/recovery.wipe
 TARGET_RECOVERY_FSTAB := $(DEVICE_PATH)/recovery/root/system/etc/recovery.fstab
 
 # Workaround for error copying vendor files to recovery ramdisk
@@ -110,18 +121,18 @@ TARGET_COPY_OUT_VENDOR := vendor
 # Crypto
 TW_INCLUDE_CRYPTO := true
 TW_INCLUDE_CRYPTO_FBE := true
-PLATFORM_SECURITY_PATCH := 2099-12-31
-VENDOR_SECURITY_PATCH := 2099-12-31
-PLATFORM_VERSION := 16.1.0
 BOARD_SUPPRESS_SECURE_ERASE := true
+PLATFORM_VERSION := 127
+#PLATFORM_VERSION_LAST_STABLE := $(PLATFORM_VERSION)
+PRODUCT_ENFORCE_VINTF_MANIFEST := true
+PLATFORM_SECURITY_PATCH := 2127-12-31
+VENDOR_SECURITY_PATCH := $(PLATFORM_SECURITY_PATCH)
 
 # TWRP specific build flags
 TW_THEME := portrait_hdpi
-BOARD_HAS_NO_REAL_SDCARD := true
 RECOVERY_SDCARD_ON_DATA := true
 TARGET_RECOVERY_QCOM_RTC_FIX := true
 TW_EXCLUDE_DEFAULT_USB_INIT := true
-TW_EXCLUDE_SUPERSU := true
 TW_EXTRA_LANGUAGES := true
 TW_INCLUDE_NTFS_3G := true
 TW_INPUT_BLACKLIST := "hbtp_vm"
@@ -130,15 +141,16 @@ TW_MAX_BRIGHTNESS := 1023
 TW_DEFAULT_BRIGHTNESS := 420
 TW_BRIGHTNESS_PATH := "/sys/class/backlight/panel0-backlight/brightness"
 TARGET_USE_CUSTOM_LUN_FILE_PATH := /config/usb_gadget/g1/functions/mass_storage.0/lun.%d/file
+TW_QCOM_ATS_OFFSET := 1634734131000
 TARGET_RECOVERY_PIXEL_FORMAT := BGRA_8888
 TW_NO_SCREEN_BLANK := true
 TW_USE_TOOLBOX := true
 TW_USE_LEDS_HAPTICS := true
-USE_RECOVERY_INSTALLER := true
 TW_EXCLUDE_TWRPAPP := true
 TW_INCLUDE_REPACKTOOLS := true
 TW_HAS_EDL_MODE := true
-TW_NO_USB_STORAGE := true
+TW_Y_OFFSET := 80
+TW_H_OFFSET := -80
 TW_INCLUDE_RESETPROP := true
 TW_INCLUDE_FUSE_EXFAT := true
 TW_INCLUDE_FUSE_NTFS := true
@@ -148,10 +160,6 @@ TW_OVERRIDE_SYSTEM_PROPS := \
 # Debug flags
 TWRP_INCLUDE_LOGCAT := true
 TARGET_USES_LOGD := true
-
-# Android Verified Boot
-BOARD_AVB_ENABLE := true
-BOARD_AVB_MAKE_VBMETA_IMAGE_ARGS += --flag 2
 
 #SHRP Prop
 # Official 
@@ -174,7 +182,7 @@ SHRP_STATUSBAR_LEFT_PADDING := 40
 # For Notch devices [Optional]
 SHRP_NOTCH := true
 # SHRP Express, enables on-the-fly theme patching (also persistent) + persistent lock [Optional]
-#SHRP_EXPRESS := true
+SHRP_EXPRESS := true
 # SHRP Dark mode, use this flag to have dark theme set by default [Optional]
 SHRP_DARK := true
 # put this 0 if device has no EDL mode *
